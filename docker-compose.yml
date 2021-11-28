@@ -15,6 +15,7 @@ services:
       TZ: "Europe/London"
       WEBPASSWORD: "${DOCKER_PASSWORD:-password}"
       PIHOLE_DNS_: 127.0.0.1;1.1.1.1;8.8.8.8;8.8.4.4
+      WEBTHEME: "default-dark"
     volumes:
       - "etc-pihole/:/etc/pihole/"
       - "etc-dnsmasq.d/:/etc/dnsmasq.d/"
