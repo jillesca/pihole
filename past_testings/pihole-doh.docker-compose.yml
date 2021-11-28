@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  # See: Dohnut (options passed as environment variables)
+  # https://help.commons.host/dohnut/cli/#options
+  dohnut:
+    container_name: dohnut
+    image: commonshost/dohnut:latest
+    restart: unless-stopped
+    networks:
+      dohnut_pihole:
+        ipv4_address: 10.0.0.2
+    environment:
+      DOHNUT_LISTEN: 10.0.0.2:53000
+      DOHNUT_BOOTSTRAP: 1.1.1.1 9.9.9.9 8.8.8.8
+      DOHNUT_DOH: commonshost
+      DOHNUT_COUNTERMEASURES: spoof-queries spoof-useragent
+      DOHNUT_CACHE_DIRECTORY: /etc/dohnut
+    volumes:
+      - "./etc-dohnut/:/etc/dohnut/"
+
+  # See: Docker Pi-hole
+  # https://github.com/pi-hole/docker-pi-hole
+  pihole:
+    depends_on:
+      - dohnut
+    container_name: pihole
+    image: pihole/pihole:latest
+    restart: unless-stopped
+    networks:
+      dohnut_pihole:
+        ipv4_address: 10.0.0.3
+    environment:
+      WEBPASSWORD: "admin"
+      DNS1: 10.0.0.2#53000
+      DNS2: "no"
+    dns:
+      - 127.0.0.1
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - "./etc-pihole/:/etc/pihole/"
+      - "./etc-dnsmasq.d/:/etc/dnsmasq.d/"
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "67:67/udp"
+      - "80:80/tcp"
+      - "443:443/tcp"
+
+networks:
+  dohnut_pihole:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24
+# https://github.com/commonshost/dohnut/tree/master/docs/docker-compose-pihole
+# docker-compose -f ./docker-compose.yml up -de
+# https://stackoverflow.com/questions/32612650/how-to-get-docker-compose-to-always-re-create-containers-from-fresh-images
