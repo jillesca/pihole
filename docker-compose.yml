@@ -24,6 +24,9 @@ services:
     cap_add:
       - NET_ADMIN
     restart: always
+    # https://github.com/docker/for-linux/issues/679
+    healthcheck:
+      disable: true
 
 volumes:
   etc-pihole:
