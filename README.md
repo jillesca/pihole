@@ -2,11 +2,14 @@
 
 Docker compose for pihole running on raspberry pi
 
+install docker <https://docs.docker.com/engine/install/debian/>
+
 ## Pi-hole `v5.12.1` issue with libseccomp
 
 While updating pihole to Docker Tag `2022.09.3` Pi-hole `v5.12.1` FTL `v5.18` Web Interface `v5.15` release had an issue with libseccomp
 
 Errors were like:
+
 ```bash
 pi@raspberrypi:~/pihole$ docker ps
 CONTAINER ID   IMAGE                  COMMAND      CREATED          STATUS                           PORTS     NAMES
@@ -26,9 +29,9 @@ echo "deb http://deb.debian.org/debian buster-backports main" | sudo tee -a /etc
 sudo apt update
 sudo apt install -t buster-backports libseccomp2
 ```
+
 [Source](https://www.reddit.com/r/pihole/comments/tz1hf3/comment/i3w0uhb)
 
-     
 ## Some usefuls commands
 
 See open ports on the containers
