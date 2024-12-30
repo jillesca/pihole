@@ -13,6 +13,7 @@ RUN apt-get update \
     && useradd -s /usr/sbin/nologin -r -M cloudflared \
     && chown cloudflared:cloudflared /usr/local/bin/cloudflared \
     && chmod +x /usr/local/bin/cloudflared \
+    && chmod +x /usr/local/bin/entrypoint.sh \
     && chmod +x /usr/local/bin/start-cloudflared.sh \
     && chmod +x /usr/local/bin/update-cloudflared.sh \
     && mkdir -p /etc/crontabs \
