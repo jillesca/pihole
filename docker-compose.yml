@@ -17,7 +17,7 @@ services:
       TZ: "Europe/London"
       WEBPASSWORD: "${PIHOLE_PASSWORD:-password}"
       PIHOLE_DNS_: 127.0.0.1#5053
-      WEBTHEME: "default-dark"
+      WEBTHEME: "default-auto"
       DNSMASQ_LISTENING: "all"
     volumes:
       - "etc-pihole:/etc/pihole/"
