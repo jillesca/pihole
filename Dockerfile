@@ -9,11 +9,9 @@ RUN apt-get update \
     && wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64 \
     && mv -f ./cloudflared-linux-arm64 /usr/local/bin/cloudflared \
     && useradd -s /usr/sbin/nologin -r -M cloudflared \
-    && chown root:root /etc/cron.weekly/cloudflared-updater \
     && chown cloudflared:cloudflared /etc/default/cloudflared \
     && chown cloudflared:cloudflared /usr/local/bin/cloudflared\
     && chmod +x /usr/local/bin/cloudflared \
-    && chmod +x /usr/local/bin/start-cloudflared.sh \
-    && chmod +x /etc/cron.weekly/cloudflared-updater
+    && chmod +x /usr/local/bin/start-cloudflared.sh
 
 CMD ["/usr/local/bin/start-cloudflared.sh"]
