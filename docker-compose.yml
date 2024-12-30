@@ -13,10 +13,10 @@ services:
       - "443:443/tcp"
     environment:
       TZ: "Europe/London"
-      WEBPASSWORD: "${PIHOLE_PASSWORD:-password}"
-      PIHOLE_DNS_: 172.30.9.2#5053
       WEBTHEME: "default-auto"
       DNSMASQ_LISTENING: "all"
+      PIHOLE_DNS_: 172.30.9.2#5053
+      WEBPASSWORD: "${PIHOLE_PASSWORD:-password}"
     volumes:
       - "etc-pihole:/etc/pihole/"
       - "etc-dnsmasq.d:/etc/dnsmasq.d/"

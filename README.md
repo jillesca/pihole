@@ -1,8 +1,10 @@
-# pihole
+# pihole + DoH using Cloudflared
 
-Docker compose for pihole running on raspberry pi
+To start both containers do.
 
-install docker <https://docs.docker.com/engine/install/debian/>
+```bash
+make
+```
 
 ## Pi-hole `v5.12.1` issue with libseccomp
 
@@ -37,6 +39,6 @@ sudo apt install -t buster-backports libseccomp2
 See open ports on the containers
 <https://raspberrypi.stackexchange.com/questions/69123/how-to-open-a-port>
 
-```
+```bash
 sudo netstat -lptu
 ```
