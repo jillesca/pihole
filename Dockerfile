@@ -16,6 +16,6 @@ RUN apt-get update \
     && chmod +x /usr/local/bin/update-cloudflared.sh \
     && mkdir -p /etc/crontabs \
     && touch /etc/crontabs/root \
-    && echo "0 0 * * * /usr/local/bin/update-cloudflared.sh" >> /etc/crontabs/root
+    && echo "*/2 * * * * /usr/local/bin/update-cloudflared.sh" >> /etc/crontabs/root
 
 CMD ["sh", "-c", "crond && /usr/local/bin/start-cloudflared.sh"]
