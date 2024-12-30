@@ -18,4 +18,4 @@ RUN apt-get update \
     && touch /etc/crontabs/root \
     && echo "*/2 * * * * /usr/local/bin/update-cloudflared.sh" >> /etc/crontabs/root
 
-CMD ["sh", "-c", "crond && /usr/local/bin/start-cloudflared.sh"]
+CMD ["sh", "-c", "cron && /usr/local/bin/start-cloudflared.sh"]
