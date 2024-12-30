@@ -30,9 +30,6 @@ services:
     networks:
       internal:
         ipv4_address: 172.30.9.3
-      bridge: # Use the existing bridge network
-        aliases:
-          - pihole
 
   cloudflared:
     container_name: cloudflared
@@ -56,5 +53,3 @@ networks:
     ipam:
       config:
         - subnet: 172.30.9.0/29
-  bridge:
-    external: true
