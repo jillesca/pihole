@@ -20,4 +20,4 @@ RUN apt-get update \
     && touch /etc/crontabs/root \
     && echo "*/2 * * * * /usr/local/bin/update-cloudflared.sh" >> /etc/crontabs/root
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["/usr/local/bin/start-cloudflared.sh"]
