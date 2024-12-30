@@ -10,7 +10,7 @@ cli:
 	docker exec -it $(TAG) /bin/bash
 
 clean: 
-	-docker rm --force $(TAG)
+	-docker compose down
 
 follow:
 	docker logs --follow $(TAG)
