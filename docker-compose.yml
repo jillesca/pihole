@@ -4,9 +4,7 @@ version: "3"
 services:
   pihole:
     container_name: pihole
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: pihole/pihole:latest
     ports:
       - "53:53/tcp"
       - "53:53/udp"
@@ -16,21 +14,47 @@ services:
     environment:
       TZ: "Europe/London"
       WEBPASSWORD: "${PIHOLE_PASSWORD:-password}"
-      PIHOLE_DNS_: 127.0.0.1#5053
+      PIHOLE_DNS_: 172.30.9.2#5053
       WEBTHEME: "default-auto"
       DNSMASQ_LISTENING: "all"
     volumes:
       - "etc-pihole:/etc/pihole/"
       - "etc-dnsmasq.d:/etc/dnsmasq.d/"
-    # Recommended but not required (DHCP needs NET_ADMIN)
-    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+    # https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
     cap_add:
       - NET_ADMIN
     restart: always
     # https://github.com/docker/for-linux/issues/679
     healthcheck:
       disable: true
+    networks:
+      internal:
+        ipv4_address: 172.30.9.3
+      bridge: # Use the existing bridge network
+        aliases:
+          - pihole
+
+  cloudflared:
+    container_name: cloudflared
+    restart: unless-stopped
+    image: cloudflare/cloudflared
+    command: proxy-dns
+    environment:
+      - "TUNNEL_DNS_PORT=5053"
+      - "TUNNEL_DNS_ADDRESS=0.0.0.0"
+      - "TUNNEL_DNS_UPSTREAM=https://1.1.1.1/dns-query,https://1.0.0.1/dns-query"
+    networks:
+      internal:
+        ipv4_address: 172.30.9.2
 
 volumes:
   etc-pihole:
   etc-dnsmasq.d:
+
+networks:
+  internal:
+    ipam:
+      config:
+        - subnet: 172.30.9.0/29
+  bridge:
+    external: true

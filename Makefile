@@ -4,7 +4,7 @@ TAG = pihole
 
 run:
 	$(MAKE) clean
-	docker compose up --build --detach
+	docker compose up --detach
 
 cli:
 	docker exec -it $(TAG) /bin/bash
