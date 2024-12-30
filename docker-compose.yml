@@ -4,7 +4,9 @@ version: "3"
 services:
   pihole:
     container_name: pihole
-    image: pihole/pihole:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "53:53/tcp"
       - "53:53/udp"
@@ -14,7 +16,7 @@ services:
     environment:
       TZ: "Europe/London"
       WEBPASSWORD: "${PIHOLE_PASSWORD:-password}"
-      PIHOLE_DNS_: 127.0.0.1;1.1.1.1;1.0.0.1,8.8.8.8;8.8.4.4
+      PIHOLE_DNS_: 127.0.0.1#5053
       WEBTHEME: "default-dark"
       DNSMASQ_LISTENING: "all"
     volumes:
