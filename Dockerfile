@@ -8,9 +8,9 @@ RUN apt-get update \
     && apt-get install -y wget \
     && wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64
 
-RUN && mv -f ./cloudflared-linux-arm64 /usr/local/bin/cloudflared \
+RUN mv -f ./cloudflared-linux-arm64 /usr/local/bin/cloudflared \
     && useradd -s /usr/sbin/nologin -r -M cloudflared \
-    && chown cloudflared:cloudflared /usr/local/bin/cloudflared\
+    && chown cloudflared:cloudflared /usr/local/bin/cloudflared \
     && chmod +x /usr/local/bin/cloudflared \
     && chmod +x /usr/local/bin/start-cloudflared.sh
 
