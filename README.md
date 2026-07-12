@@ -1,4 +1,4 @@
-# pihole + DoH using Cloudflared
+# Pi-hole + DoH using DNSCrypt-Proxy
 
 To start both containers do.
 
@@ -33,6 +33,16 @@ sudo apt install -t buster-backports libseccomp2
 ```
 
 [Source](https://www.reddit.com/r/pihole/comments/tz1hf3/comment/i3w0uhb)
+
+## Verify the DoH path
+
+Run the verification helper once the stack is up:
+
+```bash
+docker compose run --rm verify-doh
+```
+
+You should see an IP address for example.com and the message about the DNS over HTTPS path appearing healthy.
 
 ## Some usefuls commands
 

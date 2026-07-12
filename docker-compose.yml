@@ -1,5 +1,3 @@
-version: "3"
-
 # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
 services:
   pihole:
@@ -15,38 +13,71 @@ services:
       TZ: "Europe/London"
       WEBTHEME: "default-auto"
       DNSMASQ_LISTENING: "all"
-      PIHOLE_DNS_: 172.30.9.2#5053
+      PIHOLE_DNS_: "172.30.9.2#5053"
       WEBPASSWORD: "${PIHOLE_PASSWORD:-password}"
     volumes:
       - "etc-pihole:/etc/pihole/"
       - "etc-dnsmasq.d:/etc/dnsmasq.d/"
+    depends_on:
+      - dnscrypt
     # https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
     cap_add:
       - NET_ADMIN
     restart: always
-    # https://github.com/docker/for-linux/issues/679
     healthcheck:
-      disable: true
+      test: ["CMD", "dig", "+short", "google.com", "@127.0.0.1", "A"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     networks:
       internal:
         ipv4_address: 172.30.9.3
 
-  cloudflared:
-    container_name: cloudflared
+  dnscrypt:
+    container_name: dnscrypt-proxy
     restart: unless-stopped
-    image: cloudflare/cloudflared
-    command: proxy-dns
-    environment:
-      - "TUNNEL_DNS_PORT=5053"
-      - "TUNNEL_DNS_ADDRESS=0.0.0.0"
-      - "TUNNEL_DNS_UPSTREAM=https://1.1.1.1/dns-query,https://1.0.0.1/dns-query"
+    user: "0:0"
+    image: klutchell/dnscrypt-proxy:latest
+    command: ["-config", "/config/dnscrypt-proxy.toml"]
+    ports:
+      - "5053:5053/tcp"
+      - "5053:5053/udp"
+    volumes:
+      - "./dnscrypt-proxy:/config:ro"
+      - "dnscrypt-cache:/var/cache/dnscrypt-proxy"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "dnscrypt-proxy",
+          "-config",
+          "/config/dnscrypt-proxy.toml",
+          "-resolve",
+          "google.com",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     networks:
       internal:
         ipv4_address: 172.30.9.2
 
+  verify-doh:
+    image: alpine:3.20
+    depends_on:
+      - dnscrypt
+    entrypoint: >
+      /bin/sh -c "apk add --no-cache bind-tools >/dev/null 2>&1 && echo 'Querying google.com via dnscrypt-proxy...' && dig +short @dnscrypt -p 5053 google.com A && echo 'DNS over HTTPS path appears healthy.'"
+    networks:
+      internal:
+        ipv4_address: 172.30.9.4
+
 volumes:
   etc-pihole:
   etc-dnsmasq.d:
+  dnscrypt-cache:
 
 networks:
   internal:
